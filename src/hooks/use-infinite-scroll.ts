@@ -26,7 +26,7 @@ const useInfiniteScroll = ({ lastElementRef, nextPage }: Args) => {
       if (!entries[0].isIntersecting || nextPage === null) return;
 
       const params = new URLSearchParams(searchParams);
-      params.set("cursor", nextPage.toString());
+      params.set("page", nextPage.toString());
       startTransition(() => {
         replace(`${pathname}?${params.toString()}`);
       });

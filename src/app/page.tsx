@@ -4,15 +4,15 @@ import { UsersProvider } from "@/contexts/user-context";
 import { GithubUser, PaginatedResponse } from "@/models/api";
 
 const getUsers = async (
-  cursor: number
+  page: number
 ): Promise<PaginatedResponse<GithubUser[]>> => {
   const PER_PAGE = 12;
 
   const url = new URL("https://api.github.com/users");
 
   const params = new URLSearchParams({
-    since: `${cursor}`,
-    per_page: `${PER_PAGE}`,
+    since: "0",
+    per_page: `${page * PER_PAGE}`,
   });
   url.search = params.toString();
 
@@ -28,9 +28,9 @@ const getUsers = async (
   const data = await response.json();
   const users = data as GithubUser[];
 
-  const hasNextPage = users.length === PER_PAGE;
+  const hasNextPage = users.length === page * PER_PAGE;
   // Use last user id as next page cursor
-  const nextPage = hasNextPage ? users[users.length - 1].id : null;
+  const nextPage = hasNextPage ? page + 1 : null;
 
   return {
     data: users,
@@ -39,7 +39,7 @@ const getUsers = async (
 };
 
 interface UserSearchParams {
-  cursor: string | null;
+  page: string | null;
 }
 
 export default async function Home({
@@ -47,12 +47,12 @@ export default async function Home({
 }: {
   searchParams: UserSearchParams;
 }) {
-  const users = getUsers(Number(searchParams?.cursor ?? 0));
+  const users = getUsers(Number(searchParams?.page ?? 1));
 
   return (
-    <main>
-      <h1>GitHub Users</h1>
-      <div className="max-w-[400px] max-h-[360px] overflow-y-scroll pr-4">
+    <main className="p-8 flex flex-col items-center gap-8">
+      <h1 className="font-bold text-3xl">GitHub Users</h1>
+      <div className="w-[400px] max-h-[400px] overflow-y-scroll pr-4">
         <UsersProvider usersPromise={users}>
           <InfiniteList />
 
