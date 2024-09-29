@@ -36,7 +36,7 @@ interface UserSearchParams {
   page: string | null;
 }
 
-export default async function Home({
+export default function Home({
   searchParams,
 }: {
   searchParams: UserSearchParams;
