@@ -1,14 +1,14 @@
-"use client";
-
-import { useUsers } from "@/contexts/user-context";
+import { GithubUser } from "@/models/api";
 import Image from "next/image";
 
-const InfiniteList = () => {
-  const users = useUsers();
+interface Props {
+  users: GithubUser[];
+}
 
+const InfiniteList = ({ users }: Props) => {
   return (
     <ul className="p-4 bg-slate-700 flex flex-col items-center gap-8">
-      {users.data.map((item) => (
+      {users.map((item) => (
         <li
           key={item.id}
           className="w-[100px] h-[100px] rounded-full overflow-hidden relative"

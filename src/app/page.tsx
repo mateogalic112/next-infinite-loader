@@ -1,6 +1,5 @@
 import InfiniteList from "@/components/infinite-list";
 import LoadingSpinner from "@/components/loading-spinner";
-import { UsersProvider } from "@/contexts/user-context";
 import { GithubUser, PaginatedResponse } from "@/models/api";
 
 const getUsers = async (
@@ -36,22 +35,19 @@ interface UserSearchParams {
   page: string | null;
 }
 
-export default function Home({
+export default async function Home({
   searchParams,
 }: {
   searchParams: UserSearchParams;
 }) {
-  const users = getUsers(Number(searchParams?.page ?? 1));
+  const users = await getUsers(Number(searchParams?.page ?? 1));
 
   return (
     <main className="p-8 flex flex-col items-center gap-8">
       <h1 className="font-bold text-3xl">GitHub Users</h1>
       <div className="w-[400px] max-h-[400px] overflow-y-scroll pr-4">
-        <UsersProvider usersPromise={users}>
-          <InfiniteList />
-
-          <LoadingSpinner />
-        </UsersProvider>
+        <InfiniteList users={users.data} />
+        <LoadingSpinner nextPage={users.nextPage} />
       </div>
     </main>
   );

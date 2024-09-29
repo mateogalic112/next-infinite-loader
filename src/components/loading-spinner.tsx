@@ -1,17 +1,18 @@
 "use client";
 
-import { useUsers } from "@/contexts/user-context";
 import useInfiniteScroll from "@/hooks/use-infinite-scroll";
 import { useRef } from "react";
 
-const LoadingSpinner = () => {
-  const users = useUsers();
+interface Props {
+  nextPage: number | null;
+}
 
+const LoadingSpinner = ({ nextPage }: Props) => {
   const lastElementRef = useRef<HTMLDivElement | null>(null);
 
   const { isPending } = useInfiniteScroll({
     lastElementRef,
-    nextPage: users.nextPage,
+    nextPage,
   });
 
   return (
