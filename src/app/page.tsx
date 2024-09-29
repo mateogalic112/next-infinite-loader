@@ -25,17 +25,11 @@ const getUsers = async (
 
   if (!response.ok) throw new Error("Failed to fetch users");
 
-  const data = await response.json();
-  const users = data as GithubUser[];
+  const users = (await response.json()) as GithubUser[];
 
   const hasNextPage = users.length === page * PER_PAGE;
-  // Use last user id as next page cursor
-  const nextPage = hasNextPage ? page + 1 : null;
 
-  return {
-    data: users,
-    nextPage,
-  };
+  return { data: users, nextPage: hasNextPage ? page + 1 : null };
 };
 
 interface UserSearchParams {
